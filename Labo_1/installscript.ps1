@@ -22,7 +22,7 @@ $software += [pscustomobject]@{
 	Commando = {
                 # Start packet tracer installatiescript
 
-		$currentDir = pwd
+		$startDir = pwd
 		cd $NonChocoInstallDir
                 if (test-path PacketTracer800_Build212_64bit_setup-signed.exe) {
             		$packetTracerLog = $env:temp + (get-date -UFormat "%Y_%m_%d_%H_%M_%S_%s").replace(',','') + ".txt"  # Gegarandeerd unieke filename voor geval meerdere installaties werden / worden uitgevoerd
@@ -37,6 +37,7 @@ $software += [pscustomobject]@{
                 } else {
                     "Gelieve het script 'assemble.ps1' uit te voeren in de map $NonChocoInstallDir om de packet tracer installer te assembleren"
                 }
+                cd $startDir
 
                 <# Einde packet tracer installatiescript #> }
 	Installeren = $True     }
