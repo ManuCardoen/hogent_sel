@@ -19,11 +19,10 @@ $software += [pscustomobject]@{
 	
 $software += [pscustomobject]@{
 	Naam = "Packet Tracer"
-	Commando = {
-                # Start packet tracer installatiescript
-
-		$startDir = pwd
-		cd $NonChocoInstallDir
+	Commando = {	<# Start packet tracer installatiescript #>
+	
+				$startDir = pwd
+				cd $NonChocoInstallDir
                 if (test-path PacketTracer800_Build212_64bit_setup-signed.exe) {
             		$packetTracerLog = $env:temp + (get-date -UFormat "%Y_%m_%d_%H_%M_%S_%s").replace(',','') + ".txt"  # Gegarandeerd unieke filename voor geval meerdere installaties werden / worden uitgevoerd
         		.\PacketTracer800_Build212_64bit_setup-signed.exe /VERYSILENT /NORESTART /LOG="$packetTracerLog"
@@ -39,7 +38,7 @@ $software += [pscustomobject]@{
                 }
                 cd $startDir
 
-                <# Einde packet tracer installatiescript #> }
+					<# Einde packet tracer installatiescript #> }
 	Installeren = $True     }
 	
 # Start uitvoering menu-script
@@ -48,7 +47,7 @@ do {
     Clear-Host
     Write-Host "Te installeren software" -ForegroundColor Blue
     Write-Host "-----------------------" -ForegroundColor Blue
-    Write-Host "", "0: Installatie uitvoeren"
+    Write-Host "", "0: Installatie uitvoeren: $(($software.Installeren -eq $true).Count) items"
     
     0..($software.count - 1) | foreach-Object {
 
@@ -62,7 +61,7 @@ do {
         if ($software[$_].Installeren) {
             Write-Host $outputstring -ForegroundColor Green 
         } else {
-                Write-Host $outputstring -ForegroundColor Red 
+            Write-Host $outputstring -ForegroundColor Red 
         }
     }
 
