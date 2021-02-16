@@ -3,8 +3,8 @@
 $errormsg = ""
 $adminrechten = (New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
 
-try { choco -v | out-null } catch { $errormsg = "Chocolatey is Not installed" }
-if (!$adminrechten) { $errormsg = "Adminrechten zijn vereist om dit script uit te voeren" }
+try { choco -v | out-null } catch { $errormsg = "Een werkende Chocolatey installatie is een vereiste om het script uit te voeren" }
+if (!$adminrechten) { $errormsg = "Adminrechten zijn een vereist om dit script uit te voeren" }
 
 if ($errormsg) { Write-Host "ERROR: $errormsg" -ForeGroundColor Red ; exit }
 
@@ -155,9 +155,9 @@ Write-Host "----------" -ForegroundColor Yellow
 foreach ($soft in $software) {	
 	if ($soft.Installeren) {
 		if (select-string $soft.Verificatie -InputObject $installed) { 
-              Write-Host "$($soft.Naam): Software is geïnstalleerd" -ForegroundColor Green
+              Write-Host "$($soft.Naam): Software installatie -      OK" -ForegroundColor Green
         } else {
-              Write-Host "$($soft.Naam): Software is NIET geïnstalleerd" -ForegroundColor Red
+              Write-Host "$($soft.Naam): Software installatie - NIET OK" -ForegroundColor Red
 		}		
 	}
 }
