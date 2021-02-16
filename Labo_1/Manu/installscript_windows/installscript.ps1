@@ -1,47 +1,98 @@
+##### Guards
+
+$errormsg = ""
+$adminrechten = (New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+
+try { choco -v | out-null } catch { $errormsg = "Chocolatey is Not installed" }
+if (!$adminrechten) { $errormsg = "Adminrechten zijn vereist om dit script uit te voeren" }
+
+if ($errormsg) { Write-Host "ERROR: $errormsg" -ForeGroundColor Red ; exit }
+
 ##### Settings
 
-$logfile = "$pwd\log.txt"
 $NonChocoInstallDir = "$pwd\Install_Files_Non_Chocolatey\"
+$VPInstallDirectory = "C:\Program Files\Visual Paradigm 16.0\"
 
 ##### Softwarelijst
 
-$software = @() # lege array aanmaken
+$software = @() + [pscustomobject]@{
+    Naam 		= "Adobe Reader" ;	Installeren = $true ; 	Verificatie = "adobereader"
+	Commando 	= {choco install adobereader -y}	}
+	
+$software += [pscustomobject]@{
+    Naam 		= "Visual Code"	;	Installeren = $true	;	Verificatie = "Microsoft Visual Studio Code"
+	Commando 	= {choco install vscode -y}    	}
+	
+$software += [pscustomobject]@{
+	Naam		= "Firefox" ;		Installeren = $true ; 	Verificatie = "firefox"
+	Commando	= {choco install firefox -y}	}
 
 $software += [pscustomobject]@{
-    Naam = "Adobe Acrobat"      
-    Commando = {choco install acrobat -y}
-    Installeren = $true     }
-	
-$software += [pscustomobject]@{
-    Naam = "Visual Code"        
-    Commando = {choco install vscode -y}
-    Installeren = $true     }
-	
-$software += [pscustomobject]@{
-	Naam = "Packet Tracer"
-	Commando = {	<# Start packet tracer installatiescript #>
-	
-				$startDir = pwd
-				cd $NonChocoInstallDir
-                if (test-path PacketTracer800_Build212_64bit_setup-signed.exe) {
-            		$packetTracerLog = $env:temp + (get-date -UFormat "%Y_%m_%d_%H_%M_%S_%s").replace(',','') + ".txt"  # Gegarandeerd unieke filename voor geval meerdere installaties werden / worden uitgevoerd
-        		.\PacketTracer800_Build212_64bit_setup-signed.exe /VERYSILENT /NORESTART /LOG="$packetTracerLog"
-        		move $packetTracerLog . 
-        		$InstalledSoftware = Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall" # local machine 
-        		$InstalledSoftware += Get-ChildItem "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall" # current user
-        		if ($InstalledSoftware | Foreach-Object {$_.getValue('DisplayName')} | Where-Object {$_ -match "Cisco" }) {
-                            Write-Host "Installation succesful" -ForegroundColor Green
-                        } else {
-                            Write-Host "Installation failed" -ForegroundColor Red}		
-                } else {
-                    "Gelieve het script 'assemble.ps1' uit te voeren in de map $NonChocoInstallDir om de packet tracer installer te assembleren"
-                }
-                cd $startDir
+	Naam 		= "VLC Media Player"; Installeren = $true ; Verificatie = "vlc"
+	Commando	= {choco install vlc -y}	}
 
-					<# Einde packet tracer installatiescript #> }
-	Installeren = $True     }
+$software += [pscustomobject]@{
+	Naam		= "Github Desktop"; Installeren = $true ; Verificatie = "github-desktop"
+	Commando 	= {choco install github-desktop -y}		}
+
+$software += [pscustomobject]@{
+	Naam		= "Visual Studio Code"; Installeren = $true ; Verificatie = "vscode"
+	Commando	= {choco install vscode -y}		}
+
+$software += [pscustomobject]@{
+	Naam		= "FileZilla" ; Installeren = $true ; Verificatie = "filezilla"
+	Commando 	= {choco install filezilla -y}		}
+
+$software += [pscustomobject]@{
+	Naam		= "VirtualBox" ; Installeren = $true ; Verificatie	= "virtualbox"
+	Commando 	= {choco install virtualbox -y}		}
+
+$software += [pscustomobject]@{
+	Naam		= "MySQL workbench"; Installeren = $true ; Verificatie = "mysql.workbench"
+	Commando 	= {choco install mysql.workbench -y}	}
 	
-# Start uitvoering menu-script
+$software += [pscustomobject]@{
+	Naam 		= "Packet Tracer"
+	Installeren = $False
+	Verificatie = "Cisco Packet Tracer"	
+	Commando 	= {	
+		<# Start packet tracer installatiescript #>
+		$startDir = pwd
+	
+		cd $NonChocoInstallDir
+        if (test-path PacketTracer800_Build212_64bit_setup-signed.exe) {
+			.\PacketTracer800_Build212_64bit_setup-signed.exe /VERYSILENT /NORESTART        		
+        } else {
+            "Installatiebestanden ontbreken in directory $NonChocoInstallDir"
+		}
+
+        cd $startDir
+		<# Einde packet tracer installatiescript #> }	
+	}
+	
+$software += [pscustomobject]@{
+	Naam = "Visual Paradigm"
+	Installeren = $False
+	Verificatie = "Visual Paradigm" 
+	Commando = { 	
+			<# Start Visual Paradigm unattended installation #>
+			$startDir = pwd
+			
+			cd $NonChocoInstallDir
+			if (test-path .\Visual_Paradigm_16_2_20210201_Win64.exe) {
+				.\Visual_Paradigm_16_2_20210201_Win64 -q -dir $VPInstallDirectory
+				while (select-string "Visual_Paradigm" -inputobject ((get-process).name)) {
+					Start-Sleep -Seconds 5
+				}			
+			} else {
+				"Installatiebestanden ontbreken in directory $NonChocoInstallDir"				
+			}
+			
+			cd $startDir
+			<# Einde Visual Paradigm unattended installation #>	}
+	}
+				
+##### Menu
 
 do {
     Clear-Host
@@ -64,29 +115,52 @@ do {
             Write-Host $outputstring -ForegroundColor Red 
         }
     }
+		"$($software.Count + 1): Installatie annuleren"
 
     Write-Host ""
     $commando = Read-Host "Maak uw keuze"
 
     if ($commando -eq 0) { break; }
+	if ($commando -eq $($software.count + 1)) { exit }
     if ((1..$software.count) -contains $commando) {
         $software[ ($commando - 1) ].Installeren = !$software[ ($commando - 1) ].Installeren
     }
 
 } while ($true)
 
-# Start installatie
-
-
-# TODO :logging. Voor elke installatie de logbestanden aanmaken (via -log switch voor choco en via de /LOG=x switch voor packet tracer
-#       nadien de logging allemaal centraliseren naar het bestand dat geconfigureerd werd door gebruiker bovenaan het script, met telkens
-#       er ook bij vermeld welke software we net (probeerden) te installeren
-#   
-# plus eventueel een mechanisme om oude logfiles te wissen, of om een overzicht te tonen aan de gebruiker of installaties gelukt zijn...
-# (wordt al getoond bij packet tracer - zelfde mechanisme kan hier gedaan worden via registry query + opzoeken of naam software voor komt hierin)
+##### Installatie
 
 foreach ($soft in $software) {
 	if ($soft.Installeren) {
-		Invoke-Command -ScriptBlock $soft.Commando
+		Invoke-Command -ScriptBlock $soft.Commando		
+    }
+}
+
+##### Verificatie
+
+$InstalledSoftware = Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall" # local machine 
+$InstalledSoftware += Get-ChildItem "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall" # current user
+$registrypackages = $InstalledSoftWare | % {$_.getValue('DisplayName')} # enkel namen in lijst opnemen
+
+$chocopackages = $(choco list -local)
+$chocopackages = $chocopackages | ? {!($_ -match "packages installed.")} # weglaten melding "xx packages installed."
+
+$installed = $registrypackages + $chocopackages
+
+Clear-Host
+Write-Host "Overzicht:" -ForegroundColor Yellow
+Write-Host "----------" -ForegroundColor Yellow
+"",""
+
+foreach ($soft in $software) {	
+	if ($soft.Installeren) {
+		if (select-string $soft.Verificatie -InputObject $installed) { 
+              Write-Host "$($soft.Naam): Software is geïnstalleerd" -ForegroundColor Green
+        } else {
+              Write-Host "$($soft.Naam): Software is NIET geïnstalleerd" -ForegroundColor Red
+		}		
 	}
 }
+
+
+
