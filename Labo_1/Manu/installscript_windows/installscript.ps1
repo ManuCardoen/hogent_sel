@@ -16,46 +16,44 @@ $VPInstallDirectory = "C:\Program Files\Visual Paradigm 16.0\"
 ##### Softwarelijst
 
 $software = @() + [pscustomobject]@{
-    Naam 		= "Adobe Reader" ;	Installeren = $true ; 	Verificatie = "adobereader"
-	Commando 	= {choco install adobereader -y}	}
+    Naam 	= "Adobe Reader" ;	Installeren = $true ; 	    Verificatie = "adobereader"
+    Commando 	= {choco install adobereader -y}	}
 	
 $software += [pscustomobject]@{
-    Naam 		= "Visual Code"	;	Installeren = $true	;	Verificatie = "Microsoft Visual Studio Code"
-	Commando 	= {choco install vscode -y}    	}
+    Naam 	= "Visual Code"	;	Installeren = $true ;	    Verificatie = "Microsoft Visual Studio Code"
+    Commando 	= {choco install vscode -y}    	}
 	
 $software += [pscustomobject]@{
-	Naam		= "Firefox" ;		Installeren = $true ; 	Verificatie = "firefox"
-	Commando	= {choco install firefox -y}	}
+    Naam	= "Firefox" ;		Installeren = $true ; 	    Verificatie = "firefox"
+    Commando	= {choco install firefox -y}	}
 
 $software += [pscustomobject]@{
-	Naam 		= "VLC Media Player"; Installeren = $true ; Verificatie = "vlc"
-	Commando	= {choco install vlc -y}	}
+    Naam 	= "VLC Media Player";   Installeren = $true ;       Verificatie = "vlc"
+    Commando	= {choco install vlc -y}	}
 
 $software += [pscustomobject]@{
-	Naam		= "Github Desktop"; Installeren = $true ; Verificatie = "github-desktop"
-	Commando 	= {choco install github-desktop -y}		}
+    Naam	= "Github Desktop";     Installeren = $true ;       Verificatie = "github-desktop"
+    Commando 	= {choco install github-desktop -y}		}
 
 $software += [pscustomobject]@{
-	Naam		= "Visual Studio Code"; Installeren = $true ; Verificatie = "vscode"
-	Commando	= {choco install vscode -y}		}
+    Naam        = "Visual Studio Code"; Installeren = $true ;       Verificatie = "vscode"
+    Commando	= {choco install vscode -y}		}
 
 $software += [pscustomobject]@{
-	Naam		= "FileZilla" ; Installeren = $true ; Verificatie = "filezilla"
-	Commando 	= {choco install filezilla -y}		}
+    Naam	= "FileZilla" ;         Installeren = $true ;       Verificatie = "filezilla"
+    Commando 	= {choco install filezilla -y}		}
 
 $software += [pscustomobject]@{
-	Naam		= "VirtualBox" ; Installeren = $true ; Verificatie	= "virtualbox"
-	Commando 	= {choco install virtualbox -y}		}
+    Naam	= "VirtualBox" ;        Installeren = $true ;       Verificatie	= "virtualbox"
+Commando 	= {choco install virtualbox -y}		}
 
 $software += [pscustomobject]@{
-	Naam		= "MySQL workbench"; Installeren = $true ; Verificatie = "mysql.workbench"
-	Commando 	= {choco install mysql.workbench -y}	}
+    Naam	= "MySQL workbench";    Installeren = $true ;       Verificatie = "mysql.workbench"
+Commando 	= {choco install mysql.workbench -y}	}
 	
 $software += [pscustomobject]@{
-	Naam 		= "Packet Tracer"
-	Installeren = $False
-	Verificatie = "Cisco Packet Tracer"	
-	Commando 	= {	
+    Naam 	= "Packet Tracer";      Installeren = $False;	    Verificatie = "Cisco Packet Tracer"	
+Commando 	= {	
 		<# Start packet tracer installatiescript #>
 		$startDir = pwd
 	
@@ -71,10 +69,8 @@ $software += [pscustomobject]@{
 	}
 	
 $software += [pscustomobject]@{
-	Naam = "Visual Paradigm"
-	Installeren = $False
-	Verificatie = "Visual Paradigm" 
-	Commando = { 	
+    Naam = "Visual Paradigm";       nstalleren = $False; 	    erificatie = "Visual Paradigm" 
+    ommando = { 	
 			<# Start Visual Paradigm unattended installation #>
 			$startDir = pwd
 			
@@ -161,6 +157,3 @@ foreach ($soft in $software) {
 		}		
 	}
 }
-
-
-
