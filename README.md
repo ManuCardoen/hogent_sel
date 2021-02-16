@@ -1,2 +1,2 @@
 # hogent_sel
-Bestanden
+Repo voor software installatie lab
