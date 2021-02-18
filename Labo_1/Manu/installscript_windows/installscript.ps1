@@ -3,8 +3,8 @@
 $errormsg = ""
 $adminrechten = (New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
 
-try { choco -v | out-null } catch { $errormsg = "Een werkende Chocolatey installatie is een vereiste om het script uit te voeren" }
-if (!$adminrechten) { $errormsg = "Adminrechten zijn een vereist om dit script uit te voeren" }
+try { choco -v | out-null } catch { $errormsg = "Een werkende Chocolatey installatie is vereist om het script uit te voeren" }
+if (!$adminrechten) { $errormsg = "Adminrechten zijn vereist om dit script uit te voeren" }
 
 if ($errormsg) { Write-Host "ERROR: $errormsg" -ForeGroundColor Red ; exit }
 
