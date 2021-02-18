@@ -1,7 +1,7 @@
 #!/bin/bash
 
-declare -a names=("gitKraken" "Visual Studio Code" "VLC" "FileZilla" "VirtualBox" "mySQL workbench")
-declare -a commands=("yay -S gitkraken" "sudo pacman -S vscode --noconfirm" "sudo pacman -S vlc --noconfirm" "sudo pacman -S filezilla --noconfirm" "sudo pacman -S virtualBox --noconfirm" "sudo pacman -S mysql-workbench --noconfirm")
+declare -a names=("gitKraken" "Visual Studio Code" "VLC" "FileZilla" "Virtualbox" "mySQL workbench")
+declare -a commands=("yay -S gitkraken" "sudo pacman -S vscode --noconfirm" "sudo pacman -S vlc --noconfirm" "sudo pacman -S filezilla --noconfirm" "sudo pacman -S virtualbox --noconfirm" "sudo pacman -S mysql-workbench --noconfirm")
 declare -a toggles=("true" "true" "true" "true" "true" "true")
 amount=${#names[@]}
 
@@ -11,7 +11,7 @@ installatie() {
 		if [[ "${toggles[$i]}" == "true" ]]; then
 			echo -e "\e[36minstallatie ${names[$i]}\e[0m"
 			echo "------------------------------------------------------------"
-			${commands[$i]} > /dev/null
+			${commands[$i]} 
 		fi
 	done
 }
